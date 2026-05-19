@@ -1,6 +1,9 @@
 import Generator from 'yeoman-generator';
 import type { BaseFeatures, BaseOptions } from 'yeoman-generator';
+import latestVersion from 'latest-version';
 import { Liquid } from 'liquidjs';
+import { valid } from 'semver';
+
 import {
   parseMarkdownBlocks,
   isRemoteSource,
@@ -113,7 +116,22 @@ export default class ParseGenerator extends Generator<
         packageJson,
       });
       if (block.filename === 'package.json') {
-        this.packageJson.merge(JSON.parse(rendered));
+        const packageJsonData = JSON.parse(rendered);
+        for (const type of [
+          'dependencies',
+          'devDependencies',
+          'peerDependencies',
+        ] as const) {
+          for (const [key, value] of Object.entries(
+            packageJsonData[type] || {},
+          )) {
+            if (!valid(value as string)) {
+              packageJsonData[type][key] =
+                `^${await latestVersion(key, { version: value as string })}`;
+            }
+          }
+        }
+        this.packageJson.merge(packageJsonData);
       } else {
         this.writeDestination(block.filename, rendered);
       }
