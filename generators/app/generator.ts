@@ -1,3 +1,5 @@
+import { globSync } from 'node:fs';
+
 import Generator from 'yeoman-generator';
 import type { BaseFeatures, BaseOptions } from 'yeoman-generator';
 import latestVersion from 'latest-version';
@@ -48,8 +50,20 @@ export default class ParseGenerator extends Generator<
     if (this.options.url) {
       this.templateInput = this.options.url;
     } else {
-      const answers = await this.prompt<{ url: string }>([
+      const answers = await this.prompt<{ template: string; url?: string }>([
         {
+          type: 'select',
+          name: 'template',
+          choices: () => [
+            { name: 'custom', value: 'custom' },
+            ...globSync('*.md', { cwd: this.templatePath() })
+              .map((file) => file.substring(0, file.length - 3))
+              .map((file) => ({ name: file, value: file })),
+          ],
+          message: 'Select a template to use:',
+        },
+        {
+          when: (answers) => answers.template === 'custom',
           type: 'input',
           name: 'url',
           message:
@@ -59,7 +73,7 @@ export default class ParseGenerator extends Generator<
         },
       ]);
 
-      this.templateInput = answers.url;
+      this.templateInput = answers.url ?? answers.template;
     }
 
     if (isRemoteSource(this.templateInput)) {
