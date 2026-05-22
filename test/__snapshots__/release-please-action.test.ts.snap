@@ -15,6 +15,8 @@ permissions:
 
 jobs:
   release-please:
+    # Skip job on forks
+    # if: github.repository == 'org/repo'
     runs-on: ubuntu-latest
     permissions:
       contents: write
