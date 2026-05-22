@@ -2,13 +2,12 @@
 
 ## [0.1.3](https://github.com/mshima/generator-parse/compare/v0.1.2...v0.1.3) (2026-05-22)
 
-
 ### Bug Fixes
 
-* add commented conditional to release-please-action ([#37](https://github.com/mshima/generator-parse/issues/37)) ([5110a18](https://github.com/mshima/generator-parse/commit/5110a184af62e14702aabdfcaf0d6a1479dffa43))
-* add commitlint template ([#39](https://github.com/mshima/generator-parse/issues/39)) ([e7855f4](https://github.com/mshima/generator-parse/commit/e7855f426892f653c6a33a59868e0a046be82b36))
-* add prompt to choose template ([#38](https://github.com/mshima/generator-parse/issues/38)) ([901b615](https://github.com/mshima/generator-parse/commit/901b61589274286eafd9a017a5cb43bf420e5848))
-* resolve package.json versions ([#35](https://github.com/mshima/generator-parse/issues/35)) ([831f0b4](https://github.com/mshima/generator-parse/commit/831f0b4077353afdf9414257c25524c8788536b0))
+- add commented conditional to release-please-action ([#37](https://github.com/mshima/generator-parse/issues/37)) ([5110a18](https://github.com/mshima/generator-parse/commit/5110a184af62e14702aabdfcaf0d6a1479dffa43))
+- add commitlint template ([#39](https://github.com/mshima/generator-parse/issues/39)) ([e7855f4](https://github.com/mshima/generator-parse/commit/e7855f426892f653c6a33a59868e0a046be82b36))
+- add prompt to choose template ([#38](https://github.com/mshima/generator-parse/issues/38)) ([901b615](https://github.com/mshima/generator-parse/commit/901b61589274286eafd9a017a5cb43bf420e5848))
+- resolve package.json versions ([#35](https://github.com/mshima/generator-parse/issues/35)) ([831f0b4](https://github.com/mshima/generator-parse/commit/831f0b4077353afdf9414257c25524c8788536b0))
 
 ## [0.1.2](https://github.com/mshima/generator-parse/compare/v0.1.1...v0.1.2) (2026-05-07)
 
