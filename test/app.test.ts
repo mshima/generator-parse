@@ -31,6 +31,119 @@ describe('ParseGenerator', () => {
     vi.restoreAllMocks();
   });
 
+  it('resolves non-semver dependency versions with latest-version', async () => {
+    const markdown = [
+      '# My Template',
+      '',
+      '```liquid package.json',
+      JSON.stringify(
+        {
+          dependencies: {
+            foo: 'latest',
+            bar: 'next',
+            baz: '1.2.3',
+          },
+          devDependencies: {
+            qux: 'latest',
+          },
+        },
+        null,
+        2,
+      ),
+      '```',
+    ].join('\n');
+
+    const fetchMock = vi.fn(async (input: string | URL | Request) => {
+      const url = input instanceof Request ? input.url : String(input);
+
+      if (url === 'https://example.com/template.md') {
+        return new Response(markdown, { status: 200 });
+      }
+      if (url === 'https://registry.npmjs.org/bar') {
+        return new Response(
+          JSON.stringify({
+            'dist-tags': {
+              latest: '1.9.0',
+              next: '2.0.0-beta.1',
+            },
+            versions: {
+              '1.9.0': { version: '1.9.0' },
+              '2.0.0-beta.1': { version: '2.0.0-beta.1' },
+            },
+            time: {},
+          }),
+          {
+            status: 200,
+            headers: { 'content-type': 'application/json' },
+          },
+        );
+      }
+      if (url === 'https://registry.npmjs.org/qux') {
+        return new Response(
+          JSON.stringify({
+            'dist-tags': {
+              latest: '5.4.3',
+            },
+            versions: {
+              '5.4.3': { version: '5.4.3' },
+            },
+            time: {},
+          }),
+          {
+            status: 200,
+            headers: { 'content-type': 'application/json' },
+          },
+        );
+      }
+      if (url === 'https://registry.npmjs.org/foo') {
+        return new Response(
+          JSON.stringify({
+            'dist-tags': {
+              latest: '9.0.0',
+            },
+            versions: {
+              '9.0.0': { version: '9.0.0' },
+            },
+            time: {},
+          }),
+          {
+            status: 200,
+            headers: { 'content-type': 'application/json' },
+          },
+        );
+      }
+
+      throw new Error(`Unexpected fetch URL in test: ${url}`);
+    });
+
+    vi.stubGlobal('fetch', fetchMock);
+
+    await helpers
+      .runDefault()
+      .withArguments(['https://example.com/template.md'])
+      .withAnswers({ confirmed: true });
+
+    const calledUrls = fetchMock.mock.calls.map(([input]) =>
+      input instanceof Request ? input.url : String(input),
+    );
+
+    expect(calledUrls).toContain('https://example.com/template.md');
+    expect(calledUrls).toContain('https://registry.npmjs.org/foo');
+    expect(calledUrls).toContain('https://registry.npmjs.org/bar');
+    expect(calledUrls).toContain('https://registry.npmjs.org/qux');
+
+    result.assertJsonFileContent('package.json', {
+      dependencies: {
+        foo: '^9.0.0',
+        bar: '^2.0.0-beta.1',
+        baz: '1.2.3',
+      },
+      devDependencies: {
+        qux: '^5.4.3',
+      },
+    });
+  });
+
   it('writes files from Liquid blocks when a URL is provided', async () => {
     vi.stubGlobal(
       'fetch',
