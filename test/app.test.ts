@@ -213,6 +213,108 @@ describe('ParseGenerator', () => {
     result.assertFile('README.md');
   });
 
+  it('writes files from the built-in commitlint template', async () => {
+    const fetchMock = vi.fn(async (input: string | URL | Request) => {
+      const url = input instanceof Request ? input.url : String(input);
+
+      if (
+        url === 'https://registry.npmjs.org/@commitlint%2fcli' ||
+        url === 'https://registry.npmjs.org/@commitlint%2Fcli'
+      ) {
+        return new Response(
+          JSON.stringify({
+            'dist-tags': {
+              latest: '20.0.0',
+            },
+            versions: {
+              '20.0.0': { version: '20.0.0' },
+            },
+            time: {},
+          }),
+          {
+            status: 200,
+            headers: { 'content-type': 'application/json' },
+          },
+        );
+      }
+
+      if (
+        url ===
+          'https://registry.npmjs.org/@commitlint%2fconfig-conventional' ||
+        url === 'https://registry.npmjs.org/@commitlint%2Fconfig-conventional'
+      ) {
+        return new Response(
+          JSON.stringify({
+            'dist-tags': {
+              latest: '20.0.0',
+            },
+            versions: {
+              '20.0.0': { version: '20.0.0' },
+            },
+            time: {},
+          }),
+          {
+            status: 200,
+            headers: { 'content-type': 'application/json' },
+          },
+        );
+      }
+
+      if (url === 'https://registry.npmjs.org/husky') {
+        return new Response(
+          JSON.stringify({
+            'dist-tags': {
+              latest: '9.0.11',
+            },
+            versions: {
+              '9.0.11': { version: '9.0.11' },
+            },
+            time: {},
+          }),
+          {
+            status: 200,
+            headers: { 'content-type': 'application/json' },
+          },
+        );
+      }
+
+      throw new Error(`Unexpected fetch URL in test: ${url}`);
+    });
+
+    vi.stubGlobal('fetch', fetchMock);
+
+    await helpers.runDefault().withArguments(['commitlint']);
+
+    const calledUrls = fetchMock.mock.calls.map(([input]) =>
+      input instanceof Request ? input.url : String(input),
+    );
+
+    expect(calledUrls).toContain(
+      'https://registry.npmjs.org/@commitlint%2Fcli',
+    );
+    expect(calledUrls).toContain(
+      'https://registry.npmjs.org/@commitlint%2Fconfig-conventional',
+    );
+    expect(calledUrls).toContain('https://registry.npmjs.org/husky');
+
+    result.assertFile('commitlint.config.ts');
+    result.assertFile('.husky/commit-msg');
+    result.assertFileContent(
+      '.husky/commit-msg',
+      'npx --no -- commitlint --edit $1',
+    );
+    result.assertJsonFileContent('package.json', {
+      scripts: {
+        prepare: 'husky',
+      },
+      devDependencies: {
+        '@commitlint/cli': '^20.0.0',
+        '@commitlint/config-conventional': '^20.0.0',
+        husky: '^9.0.11',
+      },
+    });
+  });
+
   it('throws when the fetch response is not ok', async () => {
     vi.stubGlobal(
       'fetch',
