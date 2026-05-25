@@ -47,7 +47,7 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: 'lts/*'
-      - run: npm install
+      - run: npm ci
       - run: npx prettier --write .
       - name: Fix prettier on Release PR
         run: |
@@ -70,7 +70,7 @@ jobs:
         with:
           node-version: 'lts/*'
           registry-url: 'https://registry.npmjs.org'
-      - run: npm install
+      - run: npm ci
       - name: Publish with provenance
         run: npm publish --provenance --access public --workspace=\${{ join(fromJson(needs.release-please.outputs.paths_released), ' --workspace=') }}
 ",
