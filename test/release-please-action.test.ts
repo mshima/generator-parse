@@ -15,11 +15,7 @@ describe('ParseGenerator', () => {
     await helpers
       .runDefault()
       .withFiles({
-        'package.json': JSON.stringify(
-          { devDependencies: { prettier: '^3.0.0' } },
-          null,
-          2,
-        ),
+        'package.json': { devDependencies: { prettier: '^3.0.0' } },
       })
       .withArguments(['release-please-action']);
 
@@ -34,7 +30,7 @@ describe('ParseGenerator', () => {
     await helpers
       .runDefault()
       .withFiles({
-        'package.json': JSON.stringify({ devDependencies: {} }, null, 2),
+        'package.json': { devDependencies: {} },
       })
       .withArguments(['release-please-action']);
 
@@ -49,32 +45,49 @@ describe('ParseGenerator', () => {
     await helpers
       .runDefault()
       .withFiles({
-        'package.json': JSON.stringify(
-          {
-            workspaces: ['packages/a', 'packages/b'],
-            devDependencies: { prettier: '^3.0.0' },
-          },
-          null,
-          2,
-        ),
+        'package.json': {
+          workspaces: ['packages/a', 'packages/b'],
+          devDependencies: { prettier: '^3.0.0' },
+        },
       })
       .withArguments(['release-please-action']);
 
     expect(result.getSnapshot()).toMatchSnapshot();
   });
 
+  it('includes fork guard when package.json has repository.url', async () => {
+    await helpers
+      .runDefault()
+      .withFiles({
+        'package.json': {
+          repository: {
+            type: 'git',
+            url: 'https://github.com/foo/generator-parse.git',
+          },
+          devDependencies: { prettier: '^3.0.0' },
+        },
+      })
+      .withArguments(['release-please-action']);
+
+    result.assertFile('.github/workflows/release-please.yml');
+    result.assertFileContent(
+      '.github/workflows/release-please.yml',
+      '# Skip job on forks',
+    );
+    result.assertFileContent(
+      '.github/workflows/release-please.yml',
+      "if: github.repository == 'foo/generator-parse'",
+    );
+  });
+
   it('includes release-please config when workspaces exists', async () => {
     await helpers
       .runDefault()
       .withFiles({
-        'package.json': JSON.stringify(
-          {
-            workspaces: ['packages/a', 'packages/b'],
-            devDependencies: { prettier: '^3.0.0' },
-          },
-          null,
-          2,
-        ),
+        'package.json': {
+          workspaces: ['packages/a', 'packages/b'],
+          devDependencies: { prettier: '^3.0.0' },
+        },
       })
       .withArguments(['release-please-action']);
 
@@ -99,11 +112,7 @@ describe('ParseGenerator', () => {
     await helpers
       .runDefault()
       .withFiles({
-        'package.json': JSON.stringify(
-          { devDependencies: { prettier: '^3.0.0' } },
-          null,
-          2,
-        ),
+        'package.json': { devDependencies: { prettier: '^3.0.0' } },
       })
       .withArguments(['release-please-action']);
 
