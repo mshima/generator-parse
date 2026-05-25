@@ -70,6 +70,7 @@ jobs:
         with:
           node-version: 'lts/*'
           registry-url: 'https://registry.npmjs.org'
+          package-manager-cache: false
       - run: npm ci
       - name: Publish with provenance
         run: npm publish --provenance --access public --workspace=\${{ join(fromJson(needs.release-please.outputs.paths_released), ' --workspace=') }}
