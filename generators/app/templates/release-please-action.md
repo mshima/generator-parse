@@ -15,8 +15,12 @@ permissions:
 
 jobs:
   release-please:
+{% if packageJson.repository.url -%}
     # Skip job on forks
-    # if: github.repository == 'org/repo'
+{% assign repositoryParts = packageJson.repository.url | split: "/" -%}
+{% assign githubRepository = repositoryParts[3] | append: '/' | append: repositoryParts[4] | remove: ".git" -%}
+    if: github.repository == '{{{ githubRepository }}}'
+{% endif -%}
     runs-on: ubuntu-latest
     permissions:
       contents: write
