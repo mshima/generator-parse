@@ -2,17 +2,15 @@
 
 ## [0.2.0](https://github.com/mshima/generator-parse/compare/v0.1.3...v0.2.0) (2026-07-20)
 
-
 ### Features
 
-* add github actions checkout and setup-node versions ([#52](https://github.com/mshima/generator-parse/issues/52)) ([ff88935](https://github.com/mshima/generator-parse/commit/ff88935153c7892ce4db51018dc4c5c912c44811))
-
+- add github actions checkout and setup-node versions ([#52](https://github.com/mshima/generator-parse/issues/52)) ([ff88935](https://github.com/mshima/generator-parse/commit/ff88935153c7892ce4db51018dc4c5c912c44811))
 
 ### Bug Fixes
 
-* calculate repository check in release-please-action template ([#43](https://github.com/mshima/generator-parse/issues/43)) ([0572657](https://github.com/mshima/generator-parse/commit/0572657c689b58217b05471a33598cd7a4af2a1a))
-* replace npm install with npm ci ([#40](https://github.com/mshima/generator-parse/issues/40)) ([54e6139](https://github.com/mshima/generator-parse/commit/54e6139baf460182e1c5b8a16b33ff5281149e0c))
-* use setup-node with package-manager-cache as recommended ([#42](https://github.com/mshima/generator-parse/issues/42)) ([c42dcd1](https://github.com/mshima/generator-parse/commit/c42dcd1036302ff6c3ffdafc50c8f9e284ac90e9))
+- calculate repository check in release-please-action template ([#43](https://github.com/mshima/generator-parse/issues/43)) ([0572657](https://github.com/mshima/generator-parse/commit/0572657c689b58217b05471a33598cd7a4af2a1a))
+- replace npm install with npm ci ([#40](https://github.com/mshima/generator-parse/issues/40)) ([54e6139](https://github.com/mshima/generator-parse/commit/54e6139baf460182e1c5b8a16b33ff5281149e0c))
+- use setup-node with package-manager-cache as recommended ([#42](https://github.com/mshima/generator-parse/issues/42)) ([c42dcd1](https://github.com/mshima/generator-parse/commit/c42dcd1036302ff6c3ffdafc50c8f9e284ac90e9))
 
 ## [0.1.3](https://github.com/mshima/generator-parse/compare/v0.1.2...v0.1.3) (2026-05-22)
 
