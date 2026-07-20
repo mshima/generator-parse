@@ -1,6 +1,6 @@
 {
   "name": "generator-parse",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "description": "A Yeoman generator to generate files from markdown templates",
   "keywords": [
     "yeoman-generator"
