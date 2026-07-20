@@ -46,10 +46,10 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v6
+      - uses: {{{ githubActions['checkout'] }}}
         with:
           ref: ${{ needs.release-please.outputs.head_branch }}
-      - uses: actions/setup-node@v6
+      - uses: {{{ githubActions['setup-node'] }}}
         with:
           node-version: 'lts/*'
       - run: npm ci
@@ -71,8 +71,8 @@ jobs:
       contents: read
       id-token: write # Required for npm provenance
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
+      - uses: {{{ githubActions['checkout'] }}}
+      - uses: {{{ githubActions['setup-node'] }}}
         with:
           node-version: 'lts/*'
           registry-url: 'https://registry.npmjs.org'

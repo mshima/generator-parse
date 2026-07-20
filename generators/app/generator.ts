@@ -26,6 +26,7 @@ const liquid = new Liquid({
 
 type ParseOptions = BaseOptions & {
   url?: string;
+  yeomanTest?: boolean;
 };
 
 export default class ParseGenerator extends Generator<
@@ -118,6 +119,17 @@ export default class ParseGenerator extends Generator<
       throw new Error('No Liquid code blocks found in the markdown file.');
     }
 
+    const githubActionYml = this.readTemplate(
+      '../resources/dependabot/action.yml',
+    );
+    const actionRegex = /- uses: (.+)\/(.+)@(.+)/g;
+    const githubActions: Record<string, string> = {};
+    let match;
+    while ((match = actionRegex.exec(githubActionYml)) !== null) {
+      const version = this.options.yeomanTest ? 'SNAPSHOT' : match[3];
+      githubActions[match[2]] = `${match[1]}/${match[2]}@${version}`;
+    }
+
     const packageJson = this.packageJson.createProxy();
     for (const block of blocks) {
       if (block.type !== 'liquid') {
@@ -128,6 +140,7 @@ export default class ParseGenerator extends Generator<
       }
       const rendered = await liquid.parseAndRender(block.content, {
         packageJson,
+        githubActions,
       });
       if (block.filename === 'package.json') {
         const packageJsonData = JSON.parse(rendered);

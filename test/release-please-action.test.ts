@@ -44,6 +44,7 @@ describe('ParseGenerator', () => {
   it('matches snapshot when workspaces exist', async () => {
     await helpers
       .runDefault()
+      .withOptions({ yeomanTest: true })
       .withFiles({
         'package.json': {
           workspaces: ['packages/a', 'packages/b'],
